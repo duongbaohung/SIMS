@@ -1,0 +1,67 @@
+﻿@model IEnumerable<SIMS.DatabaseContext.Entities.Course>
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["title"] = "Courses";
+    ViewData["breadcrumb"] = "Course Catalog";
+    ViewData["breadcrumb-item"] = "Courses";
+}
+
+<div class="card mb-4 bg-dark text-light border-secondary">
+    <div class="card-header border-secondary d-flex justify-content-between align-items-center">
+        <div>
+            <i class="fas fa-book me-1"></i>
+            University Course Catalog
+        </div>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Course" asp-action="Add" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Add New Course
+            </a>
+        }
+    </div>
+    <div class="card-body">
+        <table class="table table-dark table-striped table-bordered text-light">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Course Name</th>
+                    <th>Credits</th>
+                    <th>Capacity</th>
+                    <th>Enrolled</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var course in Model)
+                    {
+                        <tr>
+                            <td><strong>@course.CourseCode</strong></td>
+                            <td>@course.CourseName</td>
+                            <td>@course.Credits</td>
+                            <td>@course.Capacity</td>
+                            <td>@course.Enrolled / @course.Capacity</td>
+                            <td>
+                                @if (course.Status == 1 && course.Enrolled < course.Capacity)
+                                {
+                                    <span class="badge bg-success">Open</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Closed / Full</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">No courses available.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

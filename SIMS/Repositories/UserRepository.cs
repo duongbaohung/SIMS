@@ -21,5 +21,19 @@ namespace SIMS.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
+        // Add these below your existing GetUserByUsername method:
+
+        public async Task<IEnumerable<User>> GetUsersByRoleAsync(string role)
+        {
+            // Fetch all users that have the specified role (e.g., "Student")
+            return await _context.Users.Where(u => u.Role == role).ToListAsync();
+        }
+
+        public async Task<bool> AddUserAsync(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

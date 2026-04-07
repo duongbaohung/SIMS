@@ -1,0 +1,103 @@
+﻿@model SIMS.Models.GradeViewModel
+
+@{
+    ViewData["Title"] = "Input Grade";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Input Grade</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard")">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Grade")">Grades</a></li>
+        <li class="breadcrumb-item active">Input</li>
+    </ol>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header text-white bg-danger">
+                    <i class="fas fa-edit me-1"></i>
+                    Grade Entry Form
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="StudentId" class="form-label">Student</label>
+                            <select asp-for="StudentId" class="form-select"
+                                    asp-items="@(new SelectList(Model.Students, "Id", "FullName"))">
+                                <option value="">-- Select Student --</option>
+                            </select>
+                            <span asp-validation-for="StudentId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CourseId" class="form-label">Course</label>
+                            <select asp-for="CourseId" class="form-select"
+                                    asp-items="@(new SelectList(Model.Courses, "Id", "Title"))">
+                                <option value="">-- Select Course --</option>
+                            </select>
+                            <span asp-validation-for="CourseId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Score" class="form-label">Score (0 - 100)</label>
+                            <input asp-for="Score" class="form-control" type="number" step="0.1" min="0" max="100" />
+                            <span asp-validation-for="Score" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Remarks" class="form-label">Remarks</label>
+                            <textarea asp-for="Remarks" class="form-control" rows="3" placeholder="Excellent performance, etc."></textarea>
+                            <span asp-validation-for="Remarks" class="text-danger"></span>
+                        </div>
+
+                        <div class="mt-4 mb-0">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-save me-1"></i> Submit Grade
+                                </button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a class="small text-muted" href="@Url.Action("Index", "Grade")">Back to Academic Records</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card mb-4 border-left-danger">
+                <div class="card-body">
+                    <h5>Grading Standards</h5>
+                    <hr />
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            A (Excellent) <span>80 - 100</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            B (Good) <span>70 - 79</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            C (Satisfactory) <span>60 - 69</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            D (Pass) <span>50 - 59</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            F (Fail) <span>Below 50</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

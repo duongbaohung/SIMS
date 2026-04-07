@@ -37,8 +37,9 @@
                         </a>
                         <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="#">Add new course</a>
-                                <a class="nav-link" href="#">List of Courses</a>
+                                <a class="nav-link" href="@Url.Action("Add", "Course")">Add new course</a>
+                                <a class="nav-link" href="@Url.Action("Index", "Course")">List of Courses</a>
+                                <a class="nav-link" href="@Url.Action("Assign", "Course")">Assign Students</a>
                             </nav>
                         </div>
                         @*
@@ -68,7 +69,14 @@
         </div>
         <div class="sb-sidenav-footer">
             <div class="small">Logged in as:</div>
-            Hung
+            <!-- Check if the user is logged in -->
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <h5>Welcome back, @User.Identity.Name!</h5>
+                <p>Your role: @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</p>
+            }
         </div>
     </nav>
 </div>
+<!-- Check if the user is logged in -->
+

@@ -7,8 +7,170 @@
     ViewData["breadcrumb"] = "Dashboard";
     ViewData["breadcrumb-item"] = "Home";
 }
-<div class="row">
-    <div class="col col col-md-12 col-lg-12">
-        <h3>Content of Dashboard</h3>
+<style>
+    /* Custom background for the dashboard */
+    .dashboard-bg-wrapper {
+        position: relative;
+        background-image: url('https://images.unsplash.com/photo-1523050335192-ce1dee71a047?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); /* Professional University/Library image */
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 90vh;
+        border-radius: 15px;
+        margin-top: 1.5rem;
+        padding: 2rem;
+        overflow: hidden;
+    }
+
+    /* Dark overlay to ensure text readability */
+    .dashboard-bg-wrapper::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(33, 37, 41, 0.8); /* Semi-transparent dark overlay */
+        z-index: 1;
+    }
+
+    /* Ensure content stays above the overlay */
+    .dashboard-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Modern card glassmorphism effect (Optional tweak) */
+    .card {
+        border: none;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+<!-- Welcome Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-primary shadow-sm border-0 border-start border-5 border-primary">
+            <h4 class="alert-heading">Welcome back, @User.Identity?.Name!</h4>
+            <p class="mb-0 text-muted">You are currently logged in with <strong>@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</strong> privileges.</p>
+        </div>
     </div>
+</div>
+
+<div class="row">
+    <!-- ========================================== -->
+    <!-- ADMIN SPECIFIC CARDS                       -->
+    <!-- ========================================== -->
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-primary text-white shadow border-0 h-100">
+                <div class="card-body fs-5">
+                    <i class="fas fa-users me-2"></i> Manage Users
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between border-0 border-top border-light opacity-75">
+                    <a class="small text-white stretched-link text-decoration-none" href="@Url.Action("Index", "Student")">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-success text-white shadow border-0 h-100">
+                <div class="card-body fs-5">
+                    <i class="fas fa-book me-2"></i> Course Catalog
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between border-0 border-top border-light opacity-75">
+                    <a class="small text-white stretched-link text-decoration-none" href="@Url.Action("Index", "Course")">Manage Courses</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Records Card (Admin) -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-file-signature fa-2x me-3"></i>
+                    <div>
+                        <div class="small text-white-50">Managements</div>
+                        <h5 class="mb-0">Academic Records</h5>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="@Url.Action("Index", "Grade")">Manage Grades</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    <!-- ========================================== -->
+    <!-- STUDENT SPECIFIC CARDS                     -->
+    <!-- ========================================== -->
+    @if (User.IsInRole("Student"))
+    {
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-info text-white shadow border-0 h-100">
+                <div class="card-body fs-5">
+                    <i class="fas fa-graduation-cap me-2"></i> My Courses
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between border-0 border-top border-light opacity-75">
+                    <a class="small text-white stretched-link text-decoration-none" href="@Url.Action("Index", "Course")">View Enrolled</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-dark text-white shadow border-0 h-100">
+                <div class="card-body fs-5">
+                    <i class="fas fa-file-alt me-2"></i> Transcript
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between border-0 border-top border-light opacity-75">
+                    <a class="small text-white stretched-link text-decoration-none" href="@Url.Action("Index", "Grade")">View Grades</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- ========================================== -->
+    <!-- TEACHER SPECIFIC CARDS                     -->
+    <!-- ========================================== -->
+    @if (User.IsInRole("Teacher"))
+    {
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-warning text-dark shadow border-0 h-100">
+                <div class="card-body fs-5 fw-semibold">
+                    <i class="fas fa-chalkboard-teacher me-2"></i> My Classes
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between border-0 border-top border-dark opacity-75">
+                    <a class="small text-dark stretched-link text-decoration-none fw-bold" href="@Url.Action("Index", "Course")">View Rosters</a>
+                    <div class="small text-dark"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Grades Card (Teacher) -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-edit fa-2x me-3"></i>
+                    <div>
+                        <div class="small text-white-50">Teaching</div>
+                        <h5 class="mb-0">Input Grades</h5>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="@Url.Action("Create", "Grade")">Submit Records</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

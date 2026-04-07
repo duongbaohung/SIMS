@@ -33,6 +33,8 @@ namespace SIMS
                 option.AddPolicy("TeacherOnly", policy => policy.RequireRole("Teacher"));
                 option.AddPolicy("StudentOnly", policy => policy.RequireRole("Student"));
             });
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<ICourseService, CourseService>();
 
             var app = builder.Build();
 

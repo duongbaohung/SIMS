@@ -6,5 +6,7 @@ namespace SIMS.Repositories.Interfaces
     {
         Task<User?> GetUserByUsername(string username);
         Task<User?> GetUserById(int id);
+        Task<IEnumerable<User>> GetUsersByRoleAsync(string role);
+        Task<bool> AddUserAsync(User user);
     }
 }

@@ -1,14 +1,64 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@*
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
     ViewData["title"] = "Student";
     ViewData["breadcrumb"] = "Students";
     ViewData["breadcrumb-item"] = "Add new Students";
 }
+*@
+@model SIMS.DatabaseContext.Entities.User
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["title"] = "Students";
+    ViewData["breadcrumb"] = "Create new Student";
+    ViewData["breadcrumb-item"] = "Students";
+}
+
 <div class="row">
-    <div class="col col-sm-12 col-md-12 col-lg-12">
-        <h3>Create new Student</h3>
+    <div class="col-lg-8">
+        <div class="card bg-dark text-light border-secondary mb-4">
+            <div class="card-header border-secondary">
+                <i class="fas fa-user-plus me-1"></i>
+                Student Information
+            </div>
+            <div class="card-body">
+                <form asp-action="Add" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label">Username</label>
+                        <input asp-for="Username" class="form-control bg-dark text-light border-secondary" required placeholder="Enter student username" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email Address</label>
+                        <input asp-for="Email" type="email" class="form-control bg-dark text-light border-secondary" required placeholder="student@example.com" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Phone" class="form-label">Phone Number</label>
+                            <input asp-for="Phone" class="form-control bg-dark text-light border-secondary" placeholder="Optional" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Address" class="form-label">City/Address</label>
+                            <input asp-for="Address" class="form-control bg-dark text-light border-secondary" placeholder="Optional" />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Save Student</button>
+                        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="alert alert-info bg-dark border-info text-info">
+            <h5 class="alert-heading"><i class="fas fa-info-circle me-1"></i> Note</h5>
+            <p class="mb-0 small">The new student will be assigned the default password <strong>12345678</strong>. They can change it after their first login.</p>
+        </div>
     </div>
 </div>
