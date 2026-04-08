@@ -1,0 +1,78 @@
+﻿@model SIMS.DatabaseContext.Entities.Course
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Delete Course";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-5">
+            <div class="card bg-dark text-light border-danger shadow">
+                <div class="card-header bg-danger text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-danger mb-3">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <h3 class="fw-bold">Are you sure?</h3>
+                        <p class="text-secondary">
+                            You are about to permanently remove <strong class="text-light">@Model.CourseCode - @Model.CourseName</strong>
+                            from the system. This action cannot be undone.
+                        </p>
+                    </div>
+
+                    <div class="bg-black bg-opacity-25 p-3 rounded border border-secondary mb-4 small text-start">
+                        <div class="row mb-1">
+                            <div class="col-4 text-secondary text-uppercase fw-bold" style="font-size: 0.7rem;">Credits:</div>
+                            <div class="col-8 fw-bold">@Model.Credits</div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="col-4 text-secondary text-uppercase fw-bold" style="font-size: 0.7rem;">Enrolled:</div>
+                            <div class="col-8 fw-bold">@Model.Enrolled Students</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-secondary text-uppercase fw-bold" style="font-size: 0.7rem;">Created:</div>
+                            <div class="col-8">@(Model.CreatedAt.HasValue ? Model.CreatedAt.Value.ToString("MMM dd, yyyy") : "N/A")</div>
+                        </div>
+                    </div>
+
+                    <!-- Updated to use asp-route-courseCode to match the Controller signature -->
+                    <form asp-action="Delete" asp-route-courseCode="@Model.CourseCode" method="post">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <a asp-action="Index" class="btn btn-outline-secondary w-100 py-2">
+                                    <i class="fas fa-times me-2"></i>No, Keep It
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">
+                                    <i class="fas fa-check me-2"></i>Yes, Delete
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <small class="text-muted italic">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Deleting this course will remove all associated enrollment records.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card.border-danger {
+        border-width: 2px;
+    }
+    .bg-black.bg-opacity-25 {
+        background-color: rgba(0, 0, 0, 0.25) !important;
+    }
+</style>

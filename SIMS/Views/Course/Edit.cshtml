@@ -1,0 +1,106 @@
+﻿@model SIMS.DatabaseContext.Entities.Course
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Edit Course";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card bg-dark text-light border-secondary shadow">
+                <div class="card-header border-secondary bg-dark py-3">
+                    <h5 class="mb-0 text-info">
+                        <i class="fas fa-edit me-2"></i>Modify Course: @Model.CourseCode
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Matches the controller parameter 'courseCode' instead of 'id' -->
+                    <form asp-action="Edit" asp-route-courseCode="@Model.CourseCode" method="post">
+
+                        <!-- Validation Summary: Shows why submission fails if data is invalid -->
+                        <div asp-validation-summary="All" class="text-danger mb-3 small"></div>
+
+                        <!-- Hidden Primary Key: Essential for Entity Framework to track the record -->
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Preserves non-editable data during the round-trip -->
+                        <input type="hidden" asp-for="Enrolled" />
+                        <input type="hidden" asp-for="CreatedAt" />
+                        <input type="hidden" asp-for="Status" />
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label asp-for="CourseCode" class="form-label small text-secondary fw-bold">COURSE CODE</label>
+                                <input asp-for="CourseCode" class="form-control bg-dark text-light border-secondary" readonly />
+                                <small class="text-muted italic">Permanent identifier.</small>
+                            </div>
+                            <div class="col-md-8">
+                                <label asp-for="CourseName" class="form-label small text-secondary fw-bold">COURSE NAME</label>
+                                <input asp-for="CourseName" class="form-control bg-dark text-light border-secondary" required />
+                                <span asp-validation-for="CourseName" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label small text-secondary fw-bold">DESCRIPTION</label>
+                            <textarea asp-for="Description" class="form-control bg-dark text-light border-secondary" rows="3" placeholder="Course overview..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="Credits" class="form-label small text-secondary fw-bold">CREDITS</label>
+                                <input asp-for="Credits" type="number" class="form-control bg-dark text-light border-secondary" required min="1" max="10" />
+                                <span asp-validation-for="Credits" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Capacity" class="form-label small text-secondary fw-bold">MAX CAPACITY</label>
+                                <input asp-for="Capacity" type="number" class="form-control bg-dark text-light border-secondary" required min="1" />
+                                <span asp-validation-for="Capacity" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info bg-info-subtle border-info text-info small py-2 mb-4">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle me-3 fa-lg"></i>
+                                <div>
+                                    Current Enrollment: <strong>@Model.Enrolled</strong> students.<br />
+                                    Created: @(Model.CreatedAt.HasValue ? Model.CreatedAt.Value.ToString("MMM dd, yyyy") : "N/A")
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2 pt-3 border-top border-secondary">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-info text-dark px-5 fw-bold">
+                                <i class="fas fa-save me-1"></i> Update Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-info-subtle {
+        background-color: rgba(13, 202, 240, 0.1) !important;
+    }
+
+    .form-control:focus {
+        background-color: #1a1d20;
+        border-color: #0dcaf0;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.25);
+    }
+
+    .form-control[readonly] {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        cursor: not-allowed;
+    }
+</style>

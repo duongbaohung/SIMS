@@ -1,4 +1,5 @@
 ﻿@model SIMS.DatabaseContext.Entities.Course
+
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
     ViewData["title"] = "Courses";
@@ -6,48 +7,80 @@
     ViewData["breadcrumb-item"] = "Courses";
 }
 
-<div class="row">
-    <div class="col-lg-8">
-        <div class="card bg-dark text-light border-secondary mb-4">
-            <div class="card-header border-secondary">
-                <i class="fas fa-plus-square me-1"></i>
-                Course Details
-            </div>
-            <div class="card-body">
-                <form asp-action="Add" method="post">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label asp-for="CourseCode" class="form-label">Course Code</label>
-                            <input asp-for="CourseCode" class="form-control bg-dark text-light border-secondary" required placeholder="e.g., CS101" />
-                        </div>
-                        <div class="col-md-8 mb-3">
-                            <label asp-for="CourseName" class="form-label">Course Name</label>
-                            <input asp-for="CourseName" class="form-control bg-dark text-light border-secondary" required placeholder="e.g., Intro to Programming" />
-                        </div>
-                    </div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card bg-dark text-light border-secondary mb-4 shadow">
+                <div class="card-header border-secondary py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-plus-square me-2 text-primary"></i>
+                        Course Details
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Add" method="post">
+                        <!-- Shows general errors that aren't tied to a specific field -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
 
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label">Description</label>
-                        <textarea asp-for="Description" class="form-control bg-dark text-light border-secondary" rows="3" placeholder="Brief overview of the course..."></textarea>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Credits" class="form-label">Credits</label>
-                            <input asp-for="Credits" type="number" min="1" max="6" class="form-control bg-dark text-light border-secondary" required placeholder="3" />
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="CourseCode" class="form-label small text-secondary fw-bold">COURSE CODE</label>
+                                <input asp-for="CourseCode" class="form-control bg-dark text-light border-secondary" placeholder="e.g., CS101" />
+                                <span asp-validation-for="CourseCode" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label asp-for="CourseName" class="form-label small text-secondary fw-bold">COURSE NAME</label>
+                                <input asp-for="CourseName" class="form-control bg-dark text-light border-secondary" placeholder="e.g., Intro to Programming" />
+                                <span asp-validation-for="CourseName" class="text-danger small"></span>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Capacity" class="form-label">Max Capacity</label>
-                            <input asp-for="Capacity" type="number" min="1" class="form-control bg-dark text-light border-secondary" required placeholder="30" />
-                        </div>
-                    </div>
 
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Save Course</button>
-                        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
-                    </div>
-                </form>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label small text-secondary fw-bold">DESCRIPTION</label>
+                            <textarea asp-for="Description" class="form-control bg-dark text-light border-secondary" rows="3" placeholder="Brief overview of the course..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Credits" class="form-label small text-secondary fw-bold">CREDITS</label>
+                                <input asp-for="Credits" type="number" min="1" max="10" class="form-control bg-dark text-light border-secondary" placeholder="3" />
+                                <span asp-validation-for="Credits" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Capacity" class="form-label small text-secondary fw-bold">MAX CAPACITY</label>
+                                <input asp-for="Capacity" type="number" min="1" class="form-control bg-dark text-light border-secondary" placeholder="30" />
+                                <span asp-validation-for="Capacity" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top border-secondary d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary px-5">
+                                <i class="fas fa-save me-1"></i> Save Course
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Improves the appearance of inputs when focused in dark mode */
+    .form-control:focus {
+        background-color: #1a1d20;
+        border-color: #0d6efd;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    /* Custom style for validation messages */
+    .field-validation-error {
+        font-size: 0.8rem;
+        margin-top: 4px;
+        display: block;
+    }
+</style>

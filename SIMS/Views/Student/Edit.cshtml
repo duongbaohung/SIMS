@@ -1,0 +1,88 @@
+﻿@model SIMS.DatabaseContext.Entities.User
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Edit Student";
+    ViewData["breadcrumb"] = "User Management";
+    ViewData["breadcrumb-item"] = "Edit Student";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card bg-dark text-light border-secondary shadow">
+                <div class="card-header border-secondary bg-dark py-3">
+                    <h5 class="mb-0 text-info">
+                        <i class="fas fa-user-edit me-2"></i>Edit Student: @Model.Username
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3 small"></div>
+
+                        <!-- Hidden fields to preserve internal data during postback -->
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="Role" />
+                        <input type="hidden" asp-for="Status" />
+                        <input type="hidden" asp-for="CreatedAt" />
+                        <input type="hidden" asp-for="HashPassword" />
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Username" class="form-label small text-secondary fw-bold">USERNAME</label>
+                                <input asp-for="Username" class="form-control bg-dark text-light border-secondary" required />
+                                <span asp-validation-for="Username" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label small text-secondary fw-bold">EMAIL ADDRESS</label>
+                                <input asp-for="Email" type="email" class="form-control bg-dark text-light border-secondary" required />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label small text-secondary fw-bold">PHONE NUMBER</label>
+                            <input asp-for="Phone" class="form-control bg-dark text-light border-secondary" placeholder="e.g. +1 234 567 890" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Address" class="form-label small text-secondary fw-bold">RESIDENTIAL ADDRESS</label>
+                            <textarea asp-for="Address" class="form-control bg-dark text-light border-secondary" rows="2" placeholder="Street, City, Zip Code"></textarea>
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+
+                        <div class="alert alert-info bg-info-subtle border-info text-info small py-2 mb-4">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span>Member since: <strong>@(Model.CreatedAt?.ToString("MMM dd, yyyy") ?? "N/A")</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2 pt-3 border-top border-secondary">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-info text-dark px-5 fw-bold">
+                                <i class="fas fa-save me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-info-subtle {
+        background-color: rgba(13, 202, 240, 0.1) !important;
+    }
+
+    .form-control:focus {
+        background-color: #1a1d20;
+        border-color: #0dcaf0;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.25);
+    }
+</style>

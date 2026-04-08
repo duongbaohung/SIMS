@@ -8,46 +8,74 @@
     ViewData["breadcrumb-item"] = "Home";
 }
 <style>
-    /* Custom background for the dashboard */
-    .dashboard-bg-wrapper {
+    /* 1. The Background Wrapper - Lightened */
+    .dashboard-hero {
         position: relative;
-        background-image: url('https://images.unsplash.com/photo-1523050335192-ce1dee71a047?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); /* Professional University/Library image */
+        background-image: url('https://images.unsplash.com/photo-1498243639359-2cee96651c25?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-        min-height: 90vh;
-        border-radius: 15px;
-        margin-top: 1.5rem;
-        padding: 2rem;
+        border-radius: 1.5rem;
+        padding: 3rem;
+        margin-top: 1rem;
+        min-height: 85vh;
         overflow: hidden;
+        box-shadow: 0 1rem 3rem rgba(0,0,0,0.1);
     }
 
-    /* Dark overlay to ensure text readability */
-    .dashboard-bg-wrapper::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(33, 37, 41, 0.8); /* Semi-transparent dark overlay */
-        z-index: 1;
-    }
+        /* 2. The Light Overlay - Reduced darkness significantly */
+        .dashboard-hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Using a light, vibrant gradient instead of a dark one */
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(240, 242, 245, 0.7) 100%);
+            z-index: 1;
+        }
 
-    /* Ensure content stays above the overlay */
-    .dashboard-content {
+    /* 3. Content Positioning */
+    .hero-content {
         position: relative;
         z-index: 2;
     }
 
-    /* Modern card glassmorphism effect (Optional tweak) */
-    .card {
-        border: none;
-        transition: transform 0.2s ease-in-out;
+    /* 4. Light Glass Effect for the Welcome Section */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 1rem;
+        color: #2c3e50;
     }
 
-    .card:hover {
-        transform: translateY(-5px);
+    /* 5. Card Hover Animations - Using brighter shadows */
+    .stat-card {
+        border: none;
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+        color: white;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important;
+        }
+
+    .text-glow {
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    .dashboard-title {
+        color: #1a1e26;
+        font-weight: 800;
+    }
+
+    .dashboard-subtitle {
+        color: #4a5568;
     }
 </style>
 <!-- Welcome Banner -->

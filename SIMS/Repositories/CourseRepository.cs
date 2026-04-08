@@ -22,18 +22,45 @@ namespace SIMS.Repositories
             return await _context.Courses.ToListAsync();
         }
 
+        public async Task<Course> GetCourseByIdAsync(int id)
+        {
+            return await _context.Courses.FindAsync(id);
+        }
+
+        public async Task<Course> GetCourseByCodeAsync(string courseCode)
+        {
+            return await _context.Courses.FirstOrDefaultAsync(c => c.CourseCode == courseCode);
+        }
+
         public async Task<bool> AddCourseAsync(Course course)
         {
             _context.Courses.Add(course);
             return await _context.SaveChangesAsync() > 0;
         }
 
-        /// <summary>
-        /// Persists a new enrollment and updates the course enrollment counter.
-        /// </summary>
+        public async Task<bool> UpdateCourseAsync(Course course)
+        {
+            // Robust Update: Find the existing entity first to ensure ID tracking is correct
+            var existing = await _context.Courses.FindAsync(course.Id);
+            if (existing == null) return false;
+
+            // Apply values from the posted model to the tracked entity
+            _context.Entry(existing).CurrentValues.SetValues(course);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> DeleteCourseAsync(int id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null) return false;
+
+            _context.Courses.Remove(course);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> EnrollStudentAsync(int studentId, int courseId)
         {
-            // 1. Create the enrollment record
             var enrollment = new Enrollment
             {
                 StudentId = studentId,
@@ -41,19 +68,14 @@ namespace SIMS.Repositories
                 EnrollmentDate = DateTime.Now
             };
 
-            // CRITICAL: Ensure 'public DbSet<Enrollment> Enrollments { get; set; }' 
-            // is defined in your SimsDbContext.cs file to resolve red lines here.
             await _context.Enrollments.AddAsync(enrollment);
 
-            // 2. Find the course to update the 'Enrolled' count
             var course = await _context.Courses.FindAsync(courseId);
             if (course != null)
             {
-                // Ensure your Course entity has the 'Enrolled' property defined.
                 course.Enrolled += 1;
             }
 
-            // 3. Save both changes (Enrollment insert + Course update) in one transaction
             return await _context.SaveChangesAsync() > 0;
         }
     }
