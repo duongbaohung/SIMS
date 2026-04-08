@@ -43,5 +43,11 @@ namespace SIMS.Services.Interfaces
         /// <param name="courseId">The unique identifier of the course.</param>
         /// <returns>A task representing the asynchronous operation, returning true if successful.</returns>
         Task<bool> EnrollStudentAsync(int studentId, int courseId);
+
+        // --- NEW METHOD ---
+        /// <summary>
+        /// Retrieves the most recent enrollments for display.
+        /// </summary>
+        Task<IEnumerable<Enrollment>> GetRecentEnrollmentsAsync(int limit);
     }
 }

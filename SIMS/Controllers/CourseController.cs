@@ -9,6 +9,7 @@ using System.Linq;
 namespace SIMS.Controllers
 {
     [Authorize]
+    [Route("Course")] // Standardizes all routes to start with /Course
     public class CourseController : Controller
     {
         private readonly ICourseService _courseService;
@@ -20,8 +21,9 @@ namespace SIMS.Controllers
             _userService = userService;
         }
 
-        // GET: /Course/Index
+        // GET: /Course/Index or /Course
         [HttpGet]
+        [HttpGet("Index")]
         [Authorize(Roles = "Admin, Teacher, Student")]
         public async Task<IActionResult> Index()
         {
@@ -30,7 +32,7 @@ namespace SIMS.Controllers
         }
 
         // GET: /Course/Details/CS101
-        [HttpGet]
+        [HttpGet("Details/{courseCode}")]
         [Authorize(Roles = "Admin, Teacher, Student")]
         public async Task<IActionResult> Details(string courseCode)
         {
@@ -43,16 +45,16 @@ namespace SIMS.Controllers
         }
 
         // GET: /Course/Add
-        [HttpGet]
-        [Authorize(Policy = "AdminOnly")]
+        [HttpGet("Add")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Add()
         {
             return View();
         }
 
         // POST: /Course/Add
-        [HttpPost]
-        [Authorize(Policy = "AdminOnly")]
+        [HttpPost("Add")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(Course model)
         {
@@ -60,6 +62,13 @@ namespace SIMS.Controllers
 
             if (ModelState.IsValid)
             {
+                var existingCourse = await _courseService.GetCourseByCodeAsync(model.CourseCode);
+                if (existingCourse != null)
+                {
+                    ModelState.AddModelError("CourseCode", "A course with this code already exists.");
+                    return View(model);
+                }
+
                 await _courseService.AddCourseAsync(model);
                 return RedirectToAction("Index");
             }
@@ -68,8 +77,8 @@ namespace SIMS.Controllers
         }
 
         // GET: /Course/Edit/CS101
-        // Renamed 'id' to 'courseCode' to prevent conflicts with the numeric Model.Id
-        [HttpGet]
+        // FIXED: This attribute now correctly maps 'asp-route-courseCode' to the URL path
+        [HttpGet("Edit/{courseCode}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string courseCode)
         {
@@ -82,35 +91,31 @@ namespace SIMS.Controllers
         }
 
         // POST: /Course/Edit/CS101
-        [HttpPost]
+        [HttpPost("Edit/{courseCode}")]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string courseCode, Course model)
         {
-            // Security check: ensure URL code matches model code
             if (courseCode != model.CourseCode) return BadRequest();
 
             ModelState.Remove("Description");
 
             if (ModelState.IsValid)
             {
-                // The Repository now handles this safely using SetValues
                 var success = await _courseService.UpdateCourseAsync(model);
-
                 if (success)
                 {
                     TempData["SuccessMessage"] = "Course updated successfully.";
                     return RedirectToAction("Index");
                 }
-
-                ModelState.AddModelError("", "Unable to save changes. The record might have been deleted or modified by another user.");
+                ModelState.AddModelError("", "Unable to save changes. Please try again.");
             }
 
             return View(model);
         }
 
         // GET: /Course/Delete/CS101
-        [HttpGet]
+        [HttpGet("Delete/{courseCode}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string courseCode)
         {
@@ -123,7 +128,8 @@ namespace SIMS.Controllers
         }
 
         // POST: /Course/Delete/CS101
-        [HttpPost, ActionName("Delete")]
+        [HttpPost("Delete/{courseCode}")]
+        [ActionName("Delete")]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string courseCode)
@@ -137,24 +143,30 @@ namespace SIMS.Controllers
         }
 
         // GET: /Course/Assign
-        [HttpGet]
+        [HttpGet("Assign")]
         [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> Assign()
         {
             var students = await _userService.GetAllStudentsAsync();
             var courses = await _courseService.GetAllCoursesAsync();
+            var recentEnrollments = await _courseService.GetRecentEnrollmentsAsync(10);
 
             var viewModel = new EnrollmentViewModel
             {
                 Students = students.Select(u => new StudentItem { Id = u.Id, FullName = u.Username }).ToList(),
-                Courses = courses.Select(c => new CourseItem { Id = c.Id, Title = c.CourseName }).ToList()
+                Courses = courses.Select(c => new CourseItem { Id = c.Id, Title = c.CourseName }).ToList(),
+                Enrollments = recentEnrollments.Select(e => new EnrollmentDto
+                {
+                    StudentName = students.FirstOrDefault(s => s.Id == e.StudentId)?.Username ?? "Unknown",
+                    CourseName = courses.FirstOrDefault(c => c.Id == e.CourseId)?.CourseName ?? "Unknown"
+                }).ToList()
             };
 
             return View(viewModel);
         }
 
         // POST: /Course/Assign
-        [HttpPost]
+        [HttpPost("Assign")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> Assign(EnrollmentViewModel model)
@@ -165,15 +177,22 @@ namespace SIMS.Controllers
                 if (success)
                 {
                     TempData["SuccessMessage"] = "Student assigned successfully!";
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Assign");
                 }
-                ModelState.AddModelError("", "Enrollment failed. Check capacity or existing enrollments.");
+                ModelState.AddModelError("", "Enrollment failed. Ensure the course is open and has capacity.");
             }
 
             var students = await _userService.GetAllStudentsAsync();
             var courses = await _courseService.GetAllCoursesAsync();
+            var recentEnrollments = await _courseService.GetRecentEnrollmentsAsync(10);
+
             model.Students = students.Select(u => new StudentItem { Id = u.Id, FullName = u.Username }).ToList();
             model.Courses = courses.Select(c => new CourseItem { Id = c.Id, Title = c.CourseName }).ToList();
+            model.Enrollments = recentEnrollments.Select(e => new EnrollmentDto
+            {
+                StudentName = students.FirstOrDefault(s => s.Id == e.StudentId)?.Username ?? "Unknown",
+                CourseName = courses.FirstOrDefault(c => c.Id == e.CourseId)?.CourseName ?? "Unknown"
+            }).ToList();
 
             return View(model);
         }

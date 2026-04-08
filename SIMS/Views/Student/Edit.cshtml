@@ -18,9 +18,10 @@
                 </div>
                 <div class="card-body p-4">
                     <form asp-action="Edit" method="post">
+                        <!-- Validation summary will display the duplicate Username/Email errors from the controller -->
                         <div asp-validation-summary="All" class="text-danger mb-3 small"></div>
 
-                        <!-- Hidden fields to preserve internal data during postback -->
+                        <!-- Hidden fields are critical to preserve data the user isn't allowed to edit -->
                         <input type="hidden" asp-for="Id" />
                         <input type="hidden" asp-for="Role" />
                         <input type="hidden" asp-for="Status" />

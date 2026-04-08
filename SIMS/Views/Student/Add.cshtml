@@ -1,15 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@*
-@{
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
-    ViewData["title"] = "Student";
-    ViewData["breadcrumb"] = "Students";
-    ViewData["breadcrumb-item"] = "Add new Students";
-}
-*@
-@model SIMS.DatabaseContext.Entities.User
+﻿@model SIMS.DatabaseContext.Entities.User
 @{
     Layout = "~/Views/Shared/_MainLayout.cshtml";
     ViewData["title"] = "Students";
@@ -19,46 +8,70 @@
 
 <div class="row">
     <div class="col-lg-8">
-        <div class="card bg-dark text-light border-secondary mb-4">
+        <div class="card bg-dark text-light border-secondary mb-4 shadow">
             <div class="card-header border-secondary">
-                <i class="fas fa-user-plus me-1"></i>
+                <i class="fas fa-user-plus me-1 text-primary"></i>
                 Student Information
             </div>
             <div class="card-body">
                 <form asp-action="Add" method="post">
+                    <!-- This summary will catch any model-wide or hidden field errors -->
+                    <div asp-validation-summary="All" class="text-danger mb-3 small"></div>
+
                     <div class="mb-3">
-                        <label asp-for="Username" class="form-label">Username</label>
+                        <label asp-for="Username" class="form-label fw-bold small text-secondary">USERNAME</label>
                         <input asp-for="Username" class="form-control bg-dark text-light border-secondary" required placeholder="Enter student username" />
+                        <!-- Validation span to show duplicate username errors -->
+                        <span asp-validation-for="Username" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Email" class="form-label">Email Address</label>
+                        <label asp-for="Email" class="form-label fw-bold small text-secondary">EMAIL ADDRESS</label>
                         <input asp-for="Email" type="email" class="form-control bg-dark text-light border-secondary" required placeholder="student@example.com" />
+                        <!-- Validation span to show duplicate email errors -->
+                        <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label asp-for="Phone" class="form-label">Phone Number</label>
+                            <label asp-for="Phone" class="form-label fw-bold small text-secondary">PHONE NUMBER</label>
                             <input asp-for="Phone" class="form-control bg-dark text-light border-secondary" placeholder="Optional" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label asp-for="Address" class="form-label">City/Address</label>
+                            <label asp-for="Address" class="form-label fw-bold small text-secondary">CITY/ADDRESS</label>
                             <input asp-for="Address" class="form-control bg-dark text-light border-secondary" placeholder="Optional" />
+                            <span asp-validation-for="Address" class="text-danger small"></span>
                         </div>
                     </div>
 
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Save Student</button>
-                        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+                    <div class="mt-4 pt-3 border-top border-secondary">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-save me-1"></i> Save Student
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary ms-2 px-4">Cancel</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
     <div class="col-lg-4">
-        <div class="alert alert-info bg-dark border-info text-info">
-            <h5 class="alert-heading"><i class="fas fa-info-circle me-1"></i> Note</h5>
+        <div class="alert alert-info bg-info-subtle border-info text-info shadow-sm">
+            <h6 class="alert-heading fw-bold mb-2"><i class="fas fa-info-circle me-1"></i> Note</h6>
             <p class="mb-0 small">The new student will be assigned the default password <strong>12345678</strong>. They can change it after their first login.</p>
         </div>
     </div>
 </div>
+
+<style>
+    .bg-info-subtle {
+        background-color: rgba(13, 202, 240, 0.1) !important;
+    }
+
+    .form-control:focus {
+        background-color: #1a1d20;
+        border-color: #0d6efd;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>

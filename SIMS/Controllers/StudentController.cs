@@ -17,35 +17,56 @@ namespace SIMS.Controllers
             _userService = userService;
         }
 
+        // GET: /Student/Index
         [HttpGet]
-        // Usually, only Admins and Teachers should see the full student roster
         [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> Index()
         {
-            // Fetch students from the database and pass them to the View
+            // Fetch users with the "Student" role and pass them to the View
             var students = await _userService.GetAllStudentsAsync();
             return View(students);
         }
 
+        // GET: /Student/Add
         [HttpGet]
-        [Authorize(Roles = "Admin")] // Only admins can add students
+        [Authorize(Roles = "Admin")]
         public IActionResult Add()
         {
             return View();
         }
 
+        // POST: /Student/Add
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(User model)
         {
-            // Remove validation for fields handled by the service layer
+            // Remove validation for fields handled internally to prevent silent failures
             ModelState.Remove("HashPassword");
             ModelState.Remove("Role");
             ModelState.Remove("CreatedAt");
+            ModelState.Remove("Status");
+            ModelState.Remove("Id");
+            ModelState.Remove("Enrollments");
 
             if (ModelState.IsValid)
             {
+                // 1. Proactive check for Duplicate Username
+                var existingUsername = await _userService.GetUserByUsernameAsync(model.Username);
+                if (existingUsername != null)
+                {
+                    ModelState.AddModelError("Username", "This Username is already taken.");
+                    return View(model);
+                }
+
+                // 2. Proactive check for Duplicate Email
+                var existingEmail = await _userService.GetUserByEmailAsync(model.Email);
+                if (existingEmail != null)
+                {
+                    ModelState.AddModelError("Email", "This Email address is already registered.");
+                    return View(model);
+                }
+
                 await _userService.AddStudentAsync(model);
                 return RedirectToAction("Index");
             }
@@ -53,6 +74,7 @@ namespace SIMS.Controllers
             return View(model);
         }
 
+        // GET: /Student/Edit/5
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
@@ -65,6 +87,7 @@ namespace SIMS.Controllers
             return View(student);
         }
 
+        // POST: /Student/Edit/5
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
@@ -72,24 +95,43 @@ namespace SIMS.Controllers
         {
             if (id != model.Id) return BadRequest();
 
-            // Ignore fields that shouldn't be updated or are handled internally
+            // Ignore fields that shouldn't be validated during a standard profile update
             ModelState.Remove("HashPassword");
             ModelState.Remove("Role");
             ModelState.Remove("CreatedAt");
+            ModelState.Remove("Status");
+            ModelState.Remove("Enrollments");
 
             if (ModelState.IsValid)
             {
+                // Check for duplicate username (excluding the current user's ID)
+                var existingUsername = await _userService.GetUserByUsernameAsync(model.Username);
+                if (existingUsername != null && existingUsername.Id != model.Id)
+                {
+                    ModelState.AddModelError("Username", "Username is already in use by another account.");
+                    return View(model);
+                }
+
+                // Check for duplicate email (excluding the current user's ID)
+                var existingEmail = await _userService.GetUserByEmailAsync(model.Email);
+                if (existingEmail != null && existingEmail.Id != model.Id)
+                {
+                    ModelState.AddModelError("Email", "Email is already in use by another account.");
+                    return View(model);
+                }
+
                 var success = await _userService.UpdateStudentAsync(model);
                 if (success)
                 {
                     return RedirectToAction("Index");
                 }
-                ModelState.AddModelError("", "Unable to save changes. The student may no longer exist.");
+                ModelState.AddModelError("", "Unable to save changes. Please try again.");
             }
 
             return View(model);
         }
 
+        // GET: /Student/Delete/5
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
@@ -102,17 +144,13 @@ namespace SIMS.Controllers
             return View(student);
         }
 
+        // POST: /Student/Delete/5
         [HttpPost, ActionName("Delete")]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var success = await _userService.DeleteStudentAsync(id);
-            if (!success)
-            {
-                // Handle error if necessary
-                return RedirectToAction("Index");
-            }
             return RedirectToAction("Index");
         }
     }

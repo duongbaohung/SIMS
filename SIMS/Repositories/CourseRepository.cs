@@ -4,6 +4,7 @@ using SIMS.DatabaseContext.Entities;
 using SIMS.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SIMS.Repositories
@@ -77,6 +78,15 @@ namespace SIMS.Repositories
             }
 
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        // --- NEW METHOD ---
+        public async Task<IEnumerable<Enrollment>> GetRecentEnrollmentsAsync(int limit)
+        {
+            return await _context.Enrollments
+                .OrderByDescending(e => e.EnrollmentDate)
+                .Take(limit)
+                .ToListAsync();
         }
     }
 }

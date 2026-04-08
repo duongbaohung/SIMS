@@ -15,10 +15,9 @@
                     </h5>
                 </div>
                 <div class="card-body p-4">
-                    <!-- Matches the controller parameter 'courseCode' instead of 'id' -->
+                    <!-- Standardized to use asp-route-courseCode to match the Controller and Index routing -->
                     <form asp-action="Edit" asp-route-courseCode="@Model.CourseCode" method="post">
 
-                        <!-- Validation Summary: Shows why submission fails if data is invalid -->
                         <div asp-validation-summary="All" class="text-danger mb-3 small"></div>
 
                         <!-- Hidden Primary Key: Essential for Entity Framework to track the record -->

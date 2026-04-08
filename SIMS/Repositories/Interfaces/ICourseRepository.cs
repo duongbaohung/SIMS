@@ -34,5 +34,11 @@ namespace SIMS.Repositories.Interfaces
         /// Saves a new enrollment record to the database and updates course enrollment count.
         /// </summary>
         Task<bool> EnrollStudentAsync(int studentId, int courseId);
+
+        // --- NEW METHOD ADDED FOR RECENT ASSIGNMENTS TABLE ---
+        /// <summary>
+        /// Retrieves the most recent enrollment records.
+        /// </summary>
+        Task<IEnumerable<Enrollment>> GetRecentEnrollmentsAsync(int limit);
     }
 }

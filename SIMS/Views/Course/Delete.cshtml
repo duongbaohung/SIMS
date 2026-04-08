@@ -41,7 +41,7 @@
                         </div>
                     </div>
 
-                    <!-- Updated to use asp-route-courseCode to match the Controller signature -->
+                    <!-- By using asp-route-courseCode, the Route attributes in the Controller will now generate /Course/Delete/CS101 -->
                     <form asp-action="Delete" asp-route-courseCode="@Model.CourseCode" method="post">
                         <div class="row g-2">
                             <div class="col-6">
@@ -72,6 +72,7 @@
     .card.border-danger {
         border-width: 2px;
     }
+
     .bg-black.bg-opacity-25 {
         background-color: rgba(0, 0, 0, 0.25) !important;
     }

@@ -20,6 +20,9 @@ namespace SIMS.Models
         // These lists will be used to populate the dropdown menus in the View
         public List<StudentItem>? Students { get; set; }
         public List<CourseItem>? Courses { get; set; }
+
+        // --- ADDED: Property to hold the recent assignments for the table ---
+        public List<EnrollmentDto> Enrollments { get; set; } = new List<EnrollmentDto>();
     }
 
     /// <summary>
@@ -38,5 +41,12 @@ namespace SIMS.Models
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
+    }
+
+    // --- ADDED: Data Transfer Object for the table rows ---
+    public class EnrollmentDto
+    {
+        public string StudentName { get; set; } = string.Empty;
+        public string CourseName { get; set; } = string.Empty;
     }
 }

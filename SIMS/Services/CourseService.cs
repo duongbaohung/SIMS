@@ -86,5 +86,11 @@ namespace SIMS.Services
             // 3. Coordination with the repository to persist the enrollment record
             return await _courseRepo.EnrollStudentAsync(studentId, courseId);
         }
+
+        // --- NEW METHOD ADDED FOR RECENT ASSIGNMENTS TABLE ---
+        public async Task<IEnumerable<Enrollment>> GetRecentEnrollmentsAsync(int limit)
+        {
+            return await _courseRepo.GetRecentEnrollmentsAsync(limit);
+        }
     }
 }
